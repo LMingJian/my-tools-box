@@ -1,0 +1,14 @@
+<RCC>
+  <qresource prefix="logo">
+    <file>../resources/toolboxs.ico</file>
+    <file>../resources/fileclose.png</file>
+    <file>../resources/fileopen.png</file>
+    <file>../resources/register.png</file>
+    <file>../resources/clear.png</file>
+    <file>../resources/detail.png</file>
+    <file>../resources/logout.png</file>
+  </qresource>
+  <qresource prefix="file">
+    <file>../resources/uuid.csv</file>
+  </qresource>
+</RCC>
