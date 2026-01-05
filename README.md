@@ -26,6 +26,8 @@
 
 ![img_1.png](images/img_1.png)
 
+![img_6.png](images/img_6.png)
+
 ![img_2.png](images/img_2.png)
 
 ![img_3.png](images/img_3.png)
