@@ -474,6 +474,7 @@ class MainWindow(QMainWindow):
         self.threadpool.start(worker)
 
     def fileOpenButtonEvent(self):
+        """打开文件，文件格式为 txt，要求每行一个IP"""
         file_path = QFileDialog.getOpenFileName(self.ui.QMainWidget, '请选择文件', '.', '文件类型 (*.txt *.csv)')
         if file_path[0]:
             info(file_path[0])
@@ -534,14 +535,17 @@ class MainWindow(QMainWindow):
         lines = [line.strip() for line in data.split('\n') if line.strip()]
         result = []
         for each in lines:
-            if each in self.client_list:
-                continue
+            # if each in self.client_list:
+            #     continue
             try:
                 ipaddress.ip_address(each)
                 result.append(each)
             except ValueError:
                 continue
-        self.client_list += list(set(result))
+        # self.client_list += list(set(result))
+        self.client_list.clear()
+        for each in list(set(result)):
+            self.client_list.append(each)
         self.ui.ListBrowser.setPlainText("\n".join(str(x) for x in self.client_list))
         success('输入内容已保存到列表。')
         success(f'当前列表数量：{len(self.client_list)}')
@@ -655,11 +659,15 @@ class MainWindow(QMainWindow):
 
     def mqtt_connect(self, checked):
         if checked:
-            info('连接中...')
             broker_host = self.ui.lineEdit0602.text()
+            if not broker_host:
+                warning("请填写 EMQX Broker 地址！")
+                self.ui.pushButton0601.setChecked(False)
+                return 0
             broker_port = int(self.ui.lineEdit0605.text())
             broker_username = self.ui.lineEdit0603.text() or "Client"
             broker_password = self.ui.lineEdit0604.text() or None
+            info('连接中...')
             # 执行 mqtt 连接
             self.emqx_worker = EMQXWorker(
                 broker_host=broker_host,

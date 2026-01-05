@@ -4,17 +4,69 @@ from ipaddress import IPv4Address
 from re import search
 from typing import Union
 
+import requests
+
 
 class ClientFunc:
 
 
     @staticmethod
     def search(ip, mode, model):
-        pass
+        if mode == 0:  # Api
+            if model == 0:  # ALike
+                try:
+                    api = f'http://{ip}'
+                    response = requests.get(api, timeout=0.5)
+                    if response.status_code == 200:
+                        return ip
+                except BaseException:  # noqa
+                    return 0
+            elif model == 1:  # BLike
+                try:
+                    api = f'http://{ip}'
+                    response = requests.get(api, timeout=0.5)
+                    if response.status_code == 200:
+                        return ip
+                except BaseException:  # noqa
+                    return 0
+        else:  # Header
+            if model == 0:
+                try:
+                    api = f'http://{ip}'
+                    response = requests.head(api, timeout=0.5)
+                    if response.status_code == 200:
+                        return ip
+                except BaseException:  # noqa
+                    return 0
+            elif model == 1:
+                try:
+                    api = f'http://{ip}'
+                    response = requests.head(api, timeout=0.5)
+                    if response.status_code == 200:
+                        return ip
+                except BaseException:  # noqa
+                    return 0
+        return 0
 
     @staticmethod
     def export(client_list: list[IPv4Address], model, filetype):
-        pass
+        file_name = 'Client'
+        if model == 0:
+            file_name += 'ALike'
+        elif model == 1:
+            file_name += 'BLike'
+        if filetype == 0:
+            with open(file_name + '.txt', 'w', encoding='UTF-8') as file:
+                for each in client_list:
+                    file.write(each.exploded + '\n')
+        elif filetype == 1:
+            with open(file_name + '.csv', 'w', encoding='UTF-8') as file:
+                count = 1
+                file.write(f'编号, 设备IP' + '\n')
+                for each in client_list:
+                    file.write(f'{count}, {each.exploded}' + '\n')
+                    count += 1
+        return f'请到当前文件夹中查看文件：{file_name}。'
 
     @staticmethod
     def register(password):
@@ -51,16 +103,72 @@ class ClientFunc:
         return data == hash_value
 
     def control(self, data: list, model):
-        pass
+        """
+        设备控制，通过字典管理多个不同方法
+        :param data: ('set', 1, ip, [data])  (work, flag, ip)
+        :param model: 0, 1
+        """
+        action = {
+            'set': self.handle_set,
+            'work': self.handle_work,
+            'http': self.handle_http
+        }
+        if data[0] not in action:
+            return 0
+        return action[data[0]](data[1:], model)  # noqa
 
-    def handle_http(self, data: list, model):
-        pass
+    @staticmethod
+    def handle_http(data: list, model):
+        if model == 0:
+            return f'执行 A 相关请求, {data}'
+        elif model == 1:
+            return f'执行 B 相关请求, {data}'
+        else:
+            return 0
 
-    def handle_set(self, data: list, model):
-        pass
+    @staticmethod
+    def handle_set(data: list, model):
+        """这里的字典是功能函数字典，值是对应函数的方法名"""
+        action_a = {
+            0: 'A 功能 1',
+            1: 'A 功能 2',
+            2: 'A 功能 3'
+        }
+        action_d = {
+            0: 'B 功能 1',
+            1: 'B 功能 2',
+            2: 'B 功能 3'
+        }
+        if model == 0:
+            return action_a[data[0]]  # noqa
+        elif model == 1:
+            return action_d[data[0]]  # noqa
+        else:
+            return 0
 
-    def handle_work(self, data: list, model):
-        pass
+    @staticmethod
+    def handle_work(data: list, model):
+        """这里的字典是功能函数字典，值是对应函数的方法名"""
+        action_a = {
+            0: 'a1',
+            1: 'a2',
+            2: 'a3',
+            3: 'a4',
+            4: 'a5',
+        }
+        action_d = {
+            0: 'b1',
+            1: 'b2',
+            2: 'b3',
+            3: 'b4',
+            4: 'b5'
+        }
+        if model == 0:  # ALike
+            return action_a[data[0]]  # noqa
+        elif model == 1:  # BLike
+            return action_d[data[0]]  # noqa
+        else:
+            return 0
 
     @staticmethod
     def live_compute(live_bitrate, live_duration, live_member, live_cost):
