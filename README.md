@@ -10,7 +10,31 @@
 
 在编写之初，搜索与控制的实现通过 HTTP API 接口完成。 在后续，随着技术发展，引入了 MQTT 批量发送功能，协同 HTTP API 完成物联设备的批量控制。
 
-## 2.项目配置
+
+## 2.实现功能
+
+- 软件注册（123456）
+- 设备搜索
+- 设备批量控制
+- 直播带宽计算器
+- 设备接口批量控制
+- 设备 MQTT 批量控制
+
+## 3.图例
+
+![img_0.png](images/img_0.png)
+
+![img_1.png](images/img_1.png)
+
+![img_2.png](images/img_2.png)
+
+![img_3.png](images/img_3.png)
+
+![img_4.png](images/img_4.png)
+
+![img_5.png](images/img_5.png)
+
+## 4.项目配置
 
 Python 版本建议 3.10，建议通过 Pycharm 创建 venv 虚拟环境进行开发。
 
@@ -76,7 +100,7 @@ $FileName$ -o $FileNameWithoutExtension$_rc.py
 $FileDir$
 ```
 
-## 3.项目打包
+## 5.项目打包
 
 本项目通过 nuitka 进行打包，参考文档：[ Nuitka User Manual ](https://nuitka.net/user-documentation/user-manual.html#nuitka-requirements)
 
@@ -107,14 +131,3 @@ python -m nuitka --onefile --standalone `
 ```
 %USERPROFILE%\AppData\Local\Nuitka\Nuitka\Cache\DOWNLO~1\depends\x86_64
 ```
-
-## 4.实现功能
-
-- 设备搜索
-- 设备批量控制
-- 直播带宽计算器
-- 设备接口批量控制
-- 设备 MQTT 批量控制
-
-## 5.图例
-

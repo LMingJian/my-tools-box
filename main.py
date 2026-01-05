@@ -114,7 +114,7 @@ class MainWindow(QMainWindow):
         self.check()
 
     def closeEvent(self, event):
-        # 重写关闭事件，以避免窗口关闭后没关闭子线程
+        """重写关闭事件，以避免窗口关闭后没关闭子线程"""
         if self.emqx_worker:
             self.emqx_worker.stop()
         event.accept()
@@ -128,7 +128,7 @@ class MainWindow(QMainWindow):
         self.resize(fixed_width, current_height)
 
     def onNewText(self, text):  # noqa
-        """Print 文本覆盖写入"""
+        """print 文本覆盖写入"""
         cursor = self.ui.MessageBrowser.textCursor()
         cursor.movePosition(QTextCursor.End) # noqa
         self.ui.MessageBrowser.append(text)
@@ -142,33 +142,28 @@ class MainWindow(QMainWindow):
         # ExitButton
         self.ui.ExitButton.clicked.connect(self.exitButtonEvent)
         # Lock01
-        self.ui.LockCheckBox03.clicked.connect(lambda: self.lockEvent(message='参数', state=self.ui.LockCheckBox03.isChecked(), ui=[self.ui.LineEditIP01, self.ui.LineEditMark01]))
+        self.ui.LockCheckBox03.clicked.connect(lambda: self.lockEvent(state=self.ui.LockCheckBox03.isChecked(), ui=[self.ui.LineEditIP01, self.ui.LineEditMark01]))
         # Lock02
-        self.ui.LockCheckBox04.clicked.connect(lambda: self.lockEvent(message='参数', state=self.ui.LockCheckBox04.isChecked(), ui=[self.ui.LineEditIP02, self.ui.LineEditMark02]))
+        self.ui.LockCheckBox04.clicked.connect(lambda: self.lockEvent(state=self.ui.LockCheckBox04.isChecked(), ui=[self.ui.LineEditIP02, self.ui.LineEditMark02]))
         # Lock03
-        self.ui.LockCheckBox01.clicked.connect(lambda: self.lockEvent(message='参数', state=self.ui.LockCheckBox01.isChecked(), ui=[self.ui.ComboBox01]))
+        self.ui.LockCheckBox01.clicked.connect(lambda: self.lockEvent(state=self.ui.LockCheckBox01.isChecked(), ui=[self.ui.ComboBox01]))
         # Lock04
-        self.ui.LockCheckBox02.clicked.connect(lambda: self.lockEvent(message='参数', state=self.ui.LockCheckBox02.isChecked(), ui=[self.ui.ComboBox02]))
+        self.ui.LockCheckBox02.clicked.connect(lambda: self.lockEvent(state=self.ui.LockCheckBox02.isChecked(), ui=[self.ui.ComboBox02]))
         # LockAll
         self.ui.LockAllCheckBox.clicked.connect(self.lockAllEvent)
         # ExportButton
         self.ui.ExportButton01.clicked.connect(lambda: self.exportButtonEvent(0))
         self.ui.ExportButton02.clicked.connect(lambda: self.exportButtonEvent(1))
         # Tag02 Lock
-        self.ui.LockCheckBox0201.clicked.connect(lambda: self.lockEvent(message='参数', state=self.ui.LockCheckBox0201.isChecked(), ui=[self.ui.ComboBox0201]))
-        self.ui.LockCheckBox0202.clicked.connect(lambda: self.lockEvent(message='参数', state=self.ui.LockCheckBox0202.isChecked(), ui=[self.ui.ComboBox0202]))
-        self.ui.LockCheckBox0203.clicked.connect(lambda: self.lockEvent(message='参数', state=self.ui.LockCheckBox0203.isChecked(), ui=[self.ui.LineEditIP0201]))
-        self.ui.LockCheckBox0204.clicked.connect(lambda: self.lockEvent(message='参数', state=self.ui.LockCheckBox0204.isChecked(), ui=[self.ui.LineEditIP0202]))
-        self.ui.LockCheckBox0205.clicked.connect(lambda:
-                                        self.lockEvent(
-                                            message='参数',
-                                            state=self.ui.LockCheckBox0205.isChecked(),
-                                            ui=[
-                                                self.ui.LineEditSET301, self.ui.LineEditSET302,
-                                                self.ui.LineEditSET303, self.ui.LineEditSET304,
-                                                self.ui.LineEditSET305, self.ui.LineEditSET306
-                                            ]
-                                        ))
+        self.ui.LockCheckBox0201.clicked.connect(lambda: self.lockEvent(state=self.ui.LockCheckBox0201.isChecked(), ui=[self.ui.ComboBox0201]))
+        self.ui.LockCheckBox0202.clicked.connect(lambda: self.lockEvent(state=self.ui.LockCheckBox0202.isChecked(), ui=[self.ui.ComboBox0202]))
+        self.ui.LockCheckBox0203.clicked.connect(lambda: self.lockEvent(state=self.ui.LockCheckBox0203.isChecked(), ui=[self.ui.LineEditIP0201]))
+        self.ui.LockCheckBox0204.clicked.connect(lambda: self.lockEvent(state=self.ui.LockCheckBox0204.isChecked(), ui=[self.ui.LineEditIP0202]))
+        self.ui.LockCheckBox0205.clicked.connect(lambda: self.lockEvent(state=self.ui.LockCheckBox0205.isChecked(),
+                                                                        ui=[self.ui.LineEditSET301, self.ui.LineEditSET302,
+                                                                            self.ui.LineEditSET303, self.ui.LineEditSET304,
+                                                                            self.ui.LineEditSET305, self.ui.LineEditSET306]
+                                                                        ))
         self.ui.OpenButton.clicked.connect(self.fileOpenButtonEvent)
         self.ui.CleanButton.clicked.connect(self.fileCloseButtonEvent)
         # self.ui.ShowButton.clicked.connect(self.showClientButtonEvent)
@@ -181,6 +176,7 @@ class MainWindow(QMainWindow):
         self.ui.CBitButton03.clicked.connect(self.cMbps2MB)
         self.ui.CBitButton04.clicked.connect(self.cMbps2Kbps)
         self.ui.ExportButton03.clicked.connect(self.copyClientEvent)
+        # 数据监听
         self.monitor.data_modified.connect(lambda: self.ui.ListBrowser.setPlainText("\n".join(str(x) for x in self.client_list)))
         self.ui.pushButton0601.clicked.connect(self.mqtt_connect)
         self.ui.pushButton0602.clicked.connect(self.mqtt_subscribe)
@@ -232,48 +228,6 @@ class MainWindow(QMainWindow):
             self.ui.StartButton.setText("Start")
             warning('任务被终止，请等待任务结束。')
             return 0
-
-    def http_send(self):
-        info('当前使用功能：请求发送')
-        method = self.ui.comboBox0401.currentIndex()
-        model = self.ui.comboBox0402.currentIndex()
-        api = self.ui.textEdit0402.toPlainText()
-        data = self.ui.textEdit0401.toPlainText()
-        workers = []
-        for ip in self.client_list:
-            workers.append(['http', ip, method, api, data])
-            self.task_count += 1
-        # 计算工作量
-        length = len(workers)
-        quotient, remainder = divmod(length, 10)
-        if quotient == 0:
-            tasks = [workers[i:i + 1] for i in range(0, length)]
-        elif remainder == 0:
-            tasks = [workers[i:i + quotient] for i in range(0, length - remainder, quotient)]
-        else:
-            x = workers[:-remainder]
-            y = workers[:-remainder - 1:-1]
-            y.reverse()
-            tasks = [x[i:i + quotient] for i in range(0, length - remainder, quotient)]
-            f = 0
-            while y:
-                tasks[f].append(y.pop())
-                f += 1
-        self.task_count = len(tasks)
-        # 分配工作
-        for t in tasks:
-            worker = WorkerMultiple(self.client.control, iter(t), model)
-            worker.connect(self.workerMultipleResultEven, self.workerMultipleFinishEven, self.workerErrorEven)
-            self.threadpool.start(worker)
-        # 显示进度条
-        self.progress_value = 0
-        self.ui.ProgressBar.setRange(0, length)
-        self.ui.ProgressBar.setValue(0)
-        self.ui.ProgressBar.setVisible(True)
-        # 切换按钮状态，避免多次点击
-        self.ui.StartButton.setText("Abort")
-        info(f'任务已启动，请等待运行。')
-        return 0
 
     def search_client(self):
         info('当前使用功能：搜索')
@@ -476,7 +430,7 @@ class MainWindow(QMainWindow):
         sys.exit()
 
     @staticmethod
-    def lockEvent(message: str, state: bool, ui: list[QLineEdit | QComboBox]):
+    def lockEvent(state: bool, ui: list[QLineEdit | QComboBox], message: str='参数'):
         if state:
             for each in ui:
                 each.setEnabled(False)
@@ -792,6 +746,48 @@ class MainWindow(QMainWindow):
                 success("文件已成功保存")
             except Exception as e:
                 error(f"保存文件时出错：{str(e)}")
+
+    def http_send(self):
+        info('当前使用功能：请求发送')
+        method = self.ui.comboBox0401.currentIndex()
+        model = self.ui.comboBox0402.currentIndex()
+        api = self.ui.textEdit0402.toPlainText()
+        data = self.ui.textEdit0401.toPlainText()
+        workers = []
+        for ip in self.client_list:
+            workers.append(['http', ip, method, api, data])
+            self.task_count += 1
+        # 计算工作量
+        length = len(workers)
+        quotient, remainder = divmod(length, 10)
+        if quotient == 0:
+            tasks = [workers[i:i + 1] for i in range(0, length)]
+        elif remainder == 0:
+            tasks = [workers[i:i + quotient] for i in range(0, length - remainder, quotient)]
+        else:
+            x = workers[:-remainder]
+            y = workers[:-remainder - 1:-1]
+            y.reverse()
+            tasks = [x[i:i + quotient] for i in range(0, length - remainder, quotient)]
+            f = 0
+            while y:
+                tasks[f].append(y.pop())
+                f += 1
+        self.task_count = len(tasks)
+        # 分配工作
+        for t in tasks:
+            worker = WorkerMultiple(self.client.control, iter(t), model)
+            worker.connect(self.workerMultipleResultEven, self.workerMultipleFinishEven, self.workerErrorEven)
+            self.threadpool.start(worker)
+        # 显示进度条
+        self.progress_value = 0
+        self.ui.ProgressBar.setRange(0, length)
+        self.ui.ProgressBar.setValue(0)
+        self.ui.ProgressBar.setVisible(True)
+        # 切换按钮状态，避免多次点击
+        self.ui.StartButton.setText("Abort")
+        info(f'任务已启动，请等待运行。')
+        return 0
 
 if __name__ == "__main__":
 
