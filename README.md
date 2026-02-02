@@ -73,7 +73,7 @@ $FileDir$
 实参
 
 ```
-$FileName$ -o $FileNameWithoutExtension$.py
+$FileName$ -o $FileNameWithoutExtension$_ui.py
 ```
 
 工作目录
@@ -87,7 +87,7 @@ $FileDir$
 程序路径
 
 ```
-.venv\Scripts\pyside6-uic.exe
+.venv\Scripts\pyside6-rcc.exe
 ```
 
 实参
