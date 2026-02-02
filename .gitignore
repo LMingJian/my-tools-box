@@ -8,6 +8,10 @@ __pycache__/
 
 # User
 .idea/
+*.build/
+*.onefile-build/
+*.dist/
+*.exe
 
 # Distribution / packaging
 .Python

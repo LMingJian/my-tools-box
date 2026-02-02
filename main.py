@@ -6,6 +6,8 @@ import tempfile
 from datetime import datetime
 import sys
 from itertools import islice
+from typing import Union
+
 from codingQrc import *  # noqa
 from PySide6.QtCore import QObject, Signal, QThreadPool, QRegularExpression, QTimer, QFile, QIODevice
 from PySide6.QtGui import QTextCursor, QRegularExpressionValidator
@@ -430,7 +432,7 @@ class MainWindow(QMainWindow):
         sys.exit()
 
     @staticmethod
-    def lockEvent(state: bool, ui: list[QLineEdit | QComboBox], message: str='参数'):
+    def lockEvent(state: bool, ui: list[Union[QLineEdit, QComboBox]], message: str= '参数'):
         if state:
             for each in ui:
                 each.setEnabled(False)
